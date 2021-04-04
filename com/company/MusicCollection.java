@@ -4,16 +4,19 @@ import java.util.ArrayList;
 import java.util.Iterator;
 
 public class MusicCollection {
-    private ArrayList<String> files;
+
     private MusicPlayer player;
+    private ArrayList<Music> files;
+    private ArrayList<Music> favoriteMusic;
 
     public MusicCollection() {
-        files = new ArrayList<>();
         player = new MusicPlayer();
+        files = new ArrayList<Music>();
+        favoriteMusic = new ArrayList<Music>();
     }
 
-    public void addFile(String fileName) {
-        files.add(fileName);
+    public void addFile(Music music) {
+        files.add(music);
     }
 
     public int getNumberOfFiles() {
@@ -21,42 +24,45 @@ public class MusicCollection {
     }
 
     public void listFile(int index) {
-        System.out.println(files.get(index));
+        if (index < files.size())
+            System.out.println(files.get(index).getMusicName() + "," + files.get(index).getSingerName() + ","
+                    + files.get(index).getYear());
     }
 
     public void listAllFiles() {
-        Iterator<String> it = files.iterator();
+        Iterator<Music> it = files.iterator();
         while (it.hasNext()) {
-            String temp = it.next();
-            System.out.println(temp);
+            Music temp = it.next();
+            System.out.println(temp.getMusicName() + "," + temp.getSingerName() + "," + temp.getYear());
         }
     }
 
     public void removeByIndex(int index) {
-        files.remove(index);
+        if (index < files.size())
+            files.remove(index);
     }
 
-    public void removeByName(String name) {
-        files.remove(name);
+    public void removeByName(Music music) {
+        files.remove(music);
     }
 
     public boolean startPlaying(String name) {
-        Iterator<String> it = files.iterator();
+        Iterator<Music> it = files.iterator();
         while (it.hasNext()) {
-            String temp = it.next();
-            if (temp.contains(name)) {
+            Music temp = it.next();
+            if (temp.getMusicName().contains(name)) {
                 player.startPlaying(name);
                 return true;
             }
 
         }
-        System.out.println("this singer is not exist in your list");
+
+        System.out.println("this music is not exist in your list");
         return false;
     }
 
     public void stopPlaying() {
         player.stop();
-
     }
 
     private boolean validIndex(int index) {
@@ -66,234 +72,81 @@ public class MusicCollection {
             return false;
     }
 
+    public void addFavoriteFile(Music music) {
+        favoriteMusic.add(music);
+    }
 
+    public boolean removeFavoriteByName(String name) {
+        Iterator<Music> it = favoriteMusic.iterator();
+        while (it.hasNext()) {
+            Music music = it.next();
+            if (music.getMusicName().contains(name)) {
+                favoriteMusic.remove(music);
+                return true;
+            }
+        }
+        System.out.println("music doesn't exist");
+        return false;
+    }
+
+    public void printFavorite() {
+        for (Music music : favoriteMusic) {
+            System.out.println(music.getMusicName() + "," + music.getSingerName() + "," + music.getYear());
+        }
+    }
+
+    public boolean searchMusicBySingerName(String name) {
+        Iterator<Music> it = files.iterator();
+        while (it.hasNext()) {
+            Music music = it.next();
+            if (music.getSingerName().contains(name)) {
+                System.out.println("music characteristic :");
+                System.out.println(music.getMusicName() + "," + music.getSingerName() + "," + music.getYear());
+                return true;
+            }
+        }
+
+        System.out.println("a music by this singer name doesn't exist");
+        return false;
+    }
+
+    public boolean searchMusicByMusicName(String name) {
+        Iterator<Music> it = files.iterator();
+        while (it.hasNext()) {
+            Music music = it.next();
+            if (music.getMusicName().contains(name)) {
+                System.out.println("music characteristic :");
+                System.out.println(music.getMusicName() + "," + music.getSingerName() + "," + music.getYear());
+                return true;
+            }
+        }
+
+        System.out.println("a music doesn't exist");
+        return false;
+    }
+
+    public Music findMusic(String name) {
+        Iterator<Music> it = files.iterator();
+        while (it.hasNext()) {
+            Music music = it.next();
+            if (music.getMusicName().contains(name))
+                return music;
+        }
+        return null;
+    }
+
+    public Music findFavoriteMusic(String name) {
+        Iterator<Music> it = favoriteMusic.iterator();
+        while (it.hasNext()) {
+            Music music = it.next();
+            if (music.getMusicName().contains(name))
+                return music;
+        }
+        return null;
+    }
+
+    public int getNumberOfFavoriteFiles() {
+        return favoriteMusic.size();
+    }
 }
 
-/*
-import java.util.ArrayList;
-
-*/
-/**
- * A class to hold details of audio files.
- *
- * @author David J. Barnes and Michael Kölling
- * @version 2011.07.31
- * <p>
- * Create a MusicCollection
- * <p>
- * Add a file to the collection.
- * @param filename The file to be added.
- * <p>
- * Return the number of files in the collection.
- * @return The number of files in the collection.
- * <p>
- * List a file from the collection.
- * @param index The index of the file to be listed.
- * <p>
- * Show a list of all the files in the collection.
- * <p>
- * Remove a file from the collection.
- * @param index The index of the file to be removed.
- * <p>
- * Start playing a file in the collection.
- * Use stopPlaying() to stop it playing.
- * @param index The index of the file to be played.
- * <p>
- * Stop the player.
- * <p>
- * Determine whether the given index is valid for the collection.
- * Print an error message if it is not.
- * @param index The index to be checked.
- * @return true if the index is valid, false otherwise.
- * <p>
- * Create a MusicCollection
- * <p>
- * Add a file to the collection.
- * @param filename The file to be added.
- * <p>
- * Return the number of files in the collection.
- * @return The number of files in the collection.
- * <p>
- * List a file from the collection.
- * @param index The index of the file to be listed.
- * <p>
- * Show a list of all the files in the collection.
- * <p>
- * Remove a file from the collection.
- * @param index The index of the file to be removed.
- * <p>
- * Start playing a file in the collection.
- * Use stopPlaying() to stop it playing.
- * @param index The index of the file to be played.
- * <p>
- * Stop the player.
- * <p>
- * Determine whether the given index is valid for the collection.
- * Print an error message if it is not.
- * @param index The index to be checked.
- * @return true if the index is valid, false otherwise.
- * <p>
- * Create a MusicCollection
- * <p>
- * Add a file to the collection.
- * @param filename The file to be added.
- * <p>
- * Return the number of files in the collection.
- * @return The number of files in the collection.
- * <p>
- * List a file from the collection.
- * @param index The index of the file to be listed.
- * <p>
- * Show a list of all the files in the collection.
- * <p>
- * Remove a file from the collection.
- * @param index The index of the file to be removed.
- * <p>
- * Start playing a file in the collection.
- * Use stopPlaying() to stop it playing.
- * @param index The index of the file to be played.
- * <p>
- * Stop the player.
- * <p>
- * Determine whether the given index is valid for the collection.
- * Print an error message if it is not.
- * @param index The index to be checked.
- * @return true if the index is valid, false otherwise.
- * <p>
- * Create a MusicCollection
- * <p>
- * Add a file to the collection.
- * @param filename The file to be added.
- * <p>
- * Return the number of files in the collection.
- * @return The number of files in the collection.
- * <p>
- * List a file from the collection.
- * @param index The index of the file to be listed.
- * <p>
- * Show a list of all the files in the collection.
- * <p>
- * Remove a file from the collection.
- * @param index The index of the file to be removed.
- * <p>
- * Start playing a file in the collection.
- * Use stopPlaying() to stop it playing.
- * @param index The index of the file to be played.
- * <p>
- * Stop the player.
- * <p>
- * Determine whether the given index is valid for the collection.
- * Print an error message if it is not.
- * @param index The index to be checked.
- * @return true if the index is valid, false otherwise.
- *//*
-
-public class MusicCollection
-{
-    // An ArrayList for storing the file names of music files.
-    private ArrayList<String> files;
-    // A player for the music files.
-    private MusicPlayer player;
-
-    */
-/**
- * Create a MusicCollection
- *//*
-
-    public MusicCollection()
-    {
-
-    }
-
-    */
-/**
- * Add a file to the collection.
- * @param filename The file to be added.
- *//*
-
-    public void addFile(String filename)
-    {
-
-    }
-
-    */
-/**
- * Return the number of files in the collection.
- * @return The number of files in the collection.
- *//*
-
-    public int getNumberOfFiles()
-    {
-
-    }
-
-    */
-/**
- * List a file from the collection.
- * @param index The index of the file to be listed.
- *//*
-
-    public void listFile(int index)
-    {
-
-    }
-
-    */
-/**
- * Show a list of all the files in the collection.
- *//*
-
-    public void listAllFiles()
-    {
-
-    }
-
-    */
-/**
- * Remove a file from the collection.
- * @param index The index of the file to be removed.
- *//*
-
-    public void removeFile(int index)
-    {
-
-    }
-
-    */
-/**
- * Start playing a file in the collection.
- * Use stopPlaying() to stop it playing.
- * @param index The index of the file to be played.
- *//*
-
-    public void startPlaying(int index)
-    {
-
-    }
-
-    */
-/**
- * Stop the player.
- *//*
-
-    public void stopPlaying()
-    {
-
-    }
-
-
-    */
-/**
- * Determine whether the given index is valid for the collection.
- * Print an error message if it is not.
- * @param index The index to be checked.
- * @return true if the index is valid, false otherwise.
- *//*
-
-    private boolean validIndex(int index)
-    {
-        // The return value.
-        // Set according to whether the index is valid or not.
-
-    }
-}*/
